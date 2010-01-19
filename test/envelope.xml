@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ml:envelope xmlns:ml="ml"
+	xmlns:sec="http://marklogic.com/xdmp/security">
+	<ml:metadata>
+		<sec:permission>
+			<sec:capability>read</sec:capability>
+			<sec:role-id>14918370877051183774</sec:role-id>
+		</sec:permission>
+		<!-- xs:string -->
+		<ml:collection>mycoll</ml:collection>
+		<!-- xs:unsignedLong -->
+		<!--<ml:forest>5952819438143635885</ml:forest>-->
+		<ml:forest>1583071390078993212</ml:forest>
+		<!-- xs:int -->
+		<ml:quality>44</ml:quality>
+		<prop:properties xmlns:prop="http://marklogic.com/xdmp/property">
+			<myprops><p>Hello, world!</p></myprops>
+		</prop:properties>
+	</ml:metadata>
+	<ml:document>
+		<nitf change.date="June 10, 2005" change.time="19:30"
+			version="-//IPTC//DTD NITF 3.3//EN">
+			<head>
+				<title>Paid Notice: Deaths MARCUS, DAVID</title>
+				<meta content="dn100806.1" name="slug" />
+				<meta content="8" name="publication_day_of_month" />
+				<meta content="10" name="publication_month" />
+				<meta content="2006" name="publication_year" />
+				<meta content="Sunday" name="publication_day_of_week" />
+				<meta content="Classified" name="dsk" />
+				<meta content="42" name="print_page_number" />
+				<meta content="1" name="print_section" />
+				<meta content="1" name="print_column" />
+				<meta content="Paid Death Notices" name="online_sections" />
+				<docdata>
+					<doc-id id-string="1795374" />
+					<doc.copyright holder="The New York Times" year="2006" />
+					<identified-content>
+						<person class="indexing_service">MARCUS, DAVID</person>
+						<classifier class="online_producer" type="types_of_material">Paid Death
+							Notice</classifier>
+						<classifier class="online_producer" type="taxonomic_classifier">Top/Classifieds/Paid
+							Death Notices</classifier>
+					</identified-content>
+				</docdata>
+				<pubdata date.publication="20061008T000000"
+					ex-ref="http://query.nytimes.com/gst/fullpage.html?res=9C01E7DB153AF93BA35753C1A9609C8B63"
+					item-length="184" name="The New York Times" unit-of-measure="word" />
+			</head>
+			<body>
+				<body.head>
+					<hedline>
+						<hl1>Paid Notice: Deaths MARCUS, DAVID</hl1>
+					</hedline>
+				</body.head>
+				<body.content>
+					<block class="lead_paragraph">
+						<p>MARCUS--David. The officers, board and staff of the American
+							Technion Society (ATS) mourn the loss of David Marcus of Chicago,
+							a decades long supporter with vision and dedication to the ATS,
+							the Technion and Israel. Mr. Marcus was a stalwart of our Chicago
+							Chapter, where he served on the Board during the 1980s and 1990s,
+							including as chapter president. He also served on the national
+							Board of Directors and was an active leader of the Investment
+							Committee. Mr. and Mrs. Marcus supported numerous vital Technion
+							projects including the Norman and Helen Asher Space Research
+							Institute, the Chicago Chapter Organic Chemistry Laboratory and
+							the Chicago Chapter Computer Centers Project. Mr. Marcus'
+							devotion was recognized in 2002 with an Albert Einstein Award,
+							the highest honor the ATS bestows. We extend our sincere sympathy
+							to David's wife, Susan, his daughter Miriam Nirenberg, sons Bruce
+							and Steve Marcus, and the entire Marcus family. American Society
+							for Technion-Israel Institute of Technology Joan Seidel,
+							President Stephen A. Laser, Chairman of the Board Melvyn H.
+							Bloom, Executive Vice President David Rappaport, Chicago Chapter
+							President Richard Zelin, West Central Region Director</p>
+					</block>
+					<block class="full_text">
+						<p>MARCUS--David. The officers, board and staff of the American
+							Technion Society (ATS) mourn the loss of David Marcus of Chicago,
+							a decades long supporter with vision and dedication to the ATS,
+							the Technion and Israel. Mr. Marcus was a stalwart of our Chicago
+							Chapter, where he served on the Board during the 1980s and 1990s,
+							including as chapter president. He also served on the national
+							Board of Directors and was an active leader of the Investment
+							Committee. Mr. and Mrs. Marcus supported numerous vital Technion
+							projects including the Norman and Helen Asher Space Research
+							Institute, the Chicago Chapter Organic Chemistry Laboratory and
+							the Chicago Chapter Computer Centers Project. Mr. Marcus'
+							devotion was recognized in 2002 with an Albert Einstein Award,
+							the highest honor the ATS bestows. We extend our sincere sympathy
+							to David's wife, Susan, his daughter Miriam Nirenberg, sons Bruce
+							and Steve Marcus, and the entire Marcus family. American Society
+							for Technion-Israel Institute of Technology Joan Seidel,
+							President Stephen A. Laser, Chairman of the Board Melvyn H.
+							Bloom, Executive Vice President David Rappaport, Chicago Chapter
+							President Richard Zelin, West Central Region Director</p>
+					</block>
+				</body.content>
+			</body>
+		</nitf>
+
+	</ml:document>
+</ml:envelope>

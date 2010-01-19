@@ -1,0 +1,63 @@
+/**/
+table {
+	font-size: 80%;
+}
+td {
+	padding-top: 0;
+}
+td p {
+	background: #333;
+	color: #fff;
+	padding: 0.5em;
+	margin: -0.25em;
+}
+td p.notes {
+	background: inherit;
+	color: inherit;
+	font-style: italic;
+	margin-left: 1em;
+	margin-top: -1em;
+}
+.request, .response {
+	margin: 0.5em 0;
+	margin-left: 1.5em;
+	text-indent: -1.5em;
+}
+.request:before {
+	content: "=> ";
+}
+.response:before {
+	content: "<= ";
+}
+.error:before {
+	content: "!= ";
+}
+.request {
+	color: green;
+}
+.response {
+	color: brown;
+}
+.error {
+	color: red;
+}
+tr.level-1 td {
+	border-top-width: 2px;
+}
+tr td:first-child::before {
+	opacity: 0.15;
+}
+tr.level-2 td:first-child::before {
+	content: " ● ";
+}
+tr.level-3 td:first-child::before {
+	content: " ● ● ";
+}
+
+.instructions {
+	font-style: italic;
+}
+.unimplemented {
+	text-decoration: line-through;
+	background: #eee;
+}

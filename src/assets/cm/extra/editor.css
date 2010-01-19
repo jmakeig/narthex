@@ -1,0 +1,9 @@
+/*  */
+.editbox {
+  margin: 0.4em;
+  padding: 0 0.5em;
+  font-family: Inconsolata, Consolas, monospace;
+	font-size: 1.25em;
+	line-height: 1.25;
+  color: black;
+}

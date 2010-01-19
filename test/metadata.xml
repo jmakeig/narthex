@@ -1,0 +1,24 @@
+<ml:metadata xmlns:ml="ml" xmlns:sec="http://marklogic.com/xdmp/security">
+<!-- 
+	 Need to think about which fragments can and should be written.
+	 Collections, for example, write all fragments. Properties 
+	 probably don't. 
+-->
+	
+	<sec:permission>
+		<sec:capability>read</sec:capability>
+		<sec:role-id>14918370877051183774</sec:role-id>
+	</sec:permission>
+	<!-- xs:string -->
+	<ml:collection>mycoll</ml:collection>
+	<!-- xs:unsignedLong -->
+	<!--<ml:forest>5952819438143635885</ml:forest>-->
+	<ml:forest>1583071390078993212</ml:forest>
+	<!-- xs:int -->
+	<ml:quality>44</ml:quality>
+	<prop:properties xmlns:prop="http://marklogic.com/xdmp/property">
+		<myprops>
+			<p>Hello, world!</p>
+		</myprops>
+	</prop:properties>
+</ml:metadata>

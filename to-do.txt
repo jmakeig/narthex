@@ -1,0 +1,17 @@
+* Real AtomPub implementation
+* Binary support
+* Proper HTTP caching
+* Plugin support
+** Editor
+** URL facade (e.g. eXist REST API)
+* Outgoing XSLT “filter”
+* -Documents browser-
+* Clean up and modularize document edit
+* Add directory navigation to document view
+* -PUTting application/vnd.marklogic.document-envelope-
+* Directory browser
+* -Collection browser-
+* -Documents search with the Search API
+
+Should this be Atompub? YES
+

@@ -1,0 +1,155 @@
+/* $Id$ */
+
+@import url("/assets/form/form.css");
+
+#document, #metadata, #properties {
+	display: none;
+}
+
+#document textarea, #properties textarea {
+	display: none;
+}
+
+
+.CodeMirror-wrapping {
+	box-sizing: border-box;
+	position: absolute !important;
+	bottom: 47px; /* <-- this is the key */
+	right: 0;
+	left: 0;
+	top: 6.3em;
+}
+
+.actions {
+	width: 50%;
+	float: right;
+	text-align: right;
+}
+
+.actions li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+}
+
+#DocumentNav {
+	border-bottom: solid 1px #ccc;
+	padding: 0;
+}
+#DocumentNav li {
+	display: inline-block;
+	margin: 0;
+	list-style: none;
+	padding: 0.25em 0.5em;
+	border: solid 1px #ccc;
+	border-bottom-style: none;
+	position: relative;
+	bottom: -1px;
+	-webkit-border-radius: 0.25em;
+	-webkit-border-bottom-left-radius: 0;
+	-webkit-border-bottom-right-radius: 0;
+	
+	-moz-border-radius: 0.25em;
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-bottomright: 0;
+	/* Why doesn't this work? */
+	/* background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.046875)), to(rgba(255, 255, 255, 0.046875))); */
+	background: rgba(0,0,0,0.05);
+}
+#DocumentNav li.selected {
+	font-weight: bold;
+	border-bottom: solid 1px #fff;
+	background: inherit;
+}
+#DocumentNav li a {
+	text-decoration: none;
+	color: inherit;
+}
+textarea#DocumentXML {
+	display: none;
+}
+#DocumentNav li .badge {
+	background: #ccc;
+	-webkit-border-radius: 0.5em;
+	-moz-border-radius: 0.5em;
+	border-radius: 0.5em;
+	padding: 0.1em 0.5em;
+	line-height: 1;
+	font-weight: normal;
+}
+#DocumentNav li.selected .badge {
+	background: rgba(0,0,0,0.05);
+}
+
+.callout {
+	color: #DF75FF;
+	text-transform: uppercase;
+}
+
+.callout:after {
+	content: ": ";
+}
+
+#metadata form {}
+
+.label label {
+	font-weight: bold;
+}
+.control input,
+.control textarea,
+.control select {
+	width: auto;
+}
+
+.input table#permissions {
+	width: auto;
+}
+.input table#permissions td {
+	padding: 0.5em;
+}
+
+li.collection {
+	/*position: relative;*/
+	display: inline-block;
+	list-style: none;
+	margin: 0;
+	margin-bottom: 0.5em;
+	margin-right: 0.25em;
+	padding: 0.25em 0.75em;
+	
+	background: #C9FF7A;
+	color: #759547;
+	
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
+	border-radius: 1em;
+}
+li.collection.new:before {/*
+	content: "★";
+	position: absolute;
+	top: 0em;
+	right: 0.25em;
+	font-size: 85%;
+	z-index: 100;
+*/}
+li.collection a {
+	text-decoration: none;
+	color: inherit;
+}
+li.collection a:hover {
+	text-decoration: underline;
+}
+li.collection button {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	margin-left: 1em;
+}
+.control .input>table {
+	margin-top: -0.6em;
+}
+.control .input>ul {
+	margin-top: -0.3em;
+}

@@ -1,0 +1,9 @@
+.message {
+	text-align: center;
+	color: #999;
+	font-style: italic;
+	font-size: 150%;
+}
+td.message {
+	padding: 1em;
+}

@@ -1,0 +1,49 @@
+/documents => same as /databases/{#}/documents for app server database
+
+/databases/{DB}/collections
+GET
+POST
+
+/databases/{DB}/collections/ => 303 Location: /databases/{DB}/collections
+
+/databases/{DB}/collections/{COLL}[+{COLL}]
+GET
+
+/databases/{DB}/collections/{COLL}/{URI}
+
+/databases/{DB}/documents
+GET
+	Accept: application/xml - Documents wrapped in custom root element
+	Accept: vnd.marklogic/uris - List of links to database documents
+POST - Create a document with system-generated database URI
+DELETE - Database clear
+
+/databases/023993828230832/documents/%2Fcontent%2Fmystuff%2F12345.xml
+OPTIONS
+	Content-Type: This is how you figure out XML/text/binary (?)
+GET
+	Accept: application/xml - Raw XML document
+	Accept: application/xml - Raw XML document
+	Accept: application/vnd.marklogic.document-envelope - Wrapper with meta
+	User-Agent: {browser} HTML representation of wrapper
+PUT
+	Content-Type: application/xml - Update with XML content
+		200 - Document as application/xml
+		400 - Parse, encoding errors
+	text/plain - Update with text content
+	??? - Update with binary content
+		200 - Document as binary
+		400 - Zero length (?)
+DELETE
+
+/databases/023993828230832/documents/%2Fcontent%2Fmystuff%2F12345.xml/meta
+
+/databases/023993828230832/documents/%2Fcontent%2Fmystuff%2F12345.xml/meta/properties
+
+/databases/023993828230832/documents/%2Fcontent%2Fmystuff%2F12345.xml/meta/collections
+
+/databases/023993828230832/documents/%2Fcontent%2Fmystuff%2F12345.xml/meta/permissions
+
+/databases/023993828230832/documents/%2Fcontent%2Fmystuff%2F12345.xml/meta/quality
+
+/databases/023993828230832/settings/range-indexes

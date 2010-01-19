@@ -1,0 +1,86 @@
+/* form-1.1.0.css,v 1.7 2009/06/08 18:40:45 */
+/*
+<div
+    class="control">
+    <div
+        class="label">
+        <label
+            for="Description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</label>
+
+        <div
+            class="guide">Morbi quis orci. Cras vitae ipsum non quam rhoncus posuere. Morbi sed sem in
+            turpis faucibus posuere. Integer ornare lacus a mauris. </div>
+    </div>
+    <div
+        class="input">
+        <input
+            type="text"
+            class="general"
+            name="asdf"
+            value="asdf"/>
+        <div
+            class="guide">Morbi quis orci. Cras vitae ipsum non quam rhoncus posuere. Morbi sed sem in
+            turpis faucibus posuere. Integer ornare lacus a mauris. </div>
+    </div>
+</div>
+*/
+.control {
+	clear: both;
+	overflow: hidden;
+	margin: 1em 0;
+	padding-top: 4px;
+}
+.control .label {
+	float: left;
+	width: 20%;
+	min-width: 8em;
+	text-align: right;
+}
+.control .input {
+	padding-left: 22%; /* .control .label width + a gutter width */
+	width: 78%;
+	min-width: 12em;
+}
+.control .guide {
+	margin: 0.5em 0;
+}
+.control .label .guide {
+	margin-left: 2em;
+}
+.control input,
+.control textarea,
+.control select {
+	display: inline-block; /* DIFF! */
+	width: 100%;
+	/* See http://www.quirksmode.org/css/box.html */
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	margin-top: -2px; /* compensate for border and padding with baseline grid */
+}
+.control textarea {
+	margin-top: -3px;
+}
+.control select {
+	margin-top: 0;
+}
+.control input[type=checkbox],
+.control input[type=radio],
+.control input[type=file] {
+  display: inline-block;
+	width: auto;
+	font-size: inherit;
+}
+.control input:focus,
+.control textarea:focus,
+.control select:focus {
+	
+}
+.control textarea {
+	height: 4em;
+}
+.control select {
+	width: auto;
+	min-width: 25%;
+}
