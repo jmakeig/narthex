@@ -1,4 +1,4 @@
-Narthex is a front-end that simplifis understanding and working with content in a [http://www.marklogic.com/product/marklogic-server.html MarkLogic Server] database.
+Narthex is a front-end that simplifies understanding and working with content in a [MarkLogic Server](http://www.marklogic.com/product/marklogic-server.html) database.
 
 Narthex provides three complementary interfaces for interacting with documents and metadata:
 
@@ -14,3 +14,5 @@ Features
 *  Create new documents at any database URI
 *  Remove documents
 *  Visualize document elements to spot patterns and anomalies
+
+![Narthex document browsing](http://makeig.com/marklogic/narthex-documents.png)
