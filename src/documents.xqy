@@ -3,15 +3,24 @@
 xquery version "1.0-ml";
 
 import module namespace search="http://marklogic.com/appservices/search" at "/MarkLogic/appservices/search/search.xqy";
-import module "http://marklogic.com/function/http" at "lib/http.xqy";
-declare namespace http="http://marklogic.com/function/http";
+import module "http://marklogic.com/util/http" at "lib/http.xqy";
+import module namespace util="http://marklogic.com/narthex/util" at "lib/util.xqy";
+declare namespace atom="http://www.w3.org/2005/Atom";
+declare namespace http="http://marklogic.com/util/http";
 declare namespace ml="ml";
 declare namespace my="local";
 declare namespace error="http://marklogic.com/xdmp/error";
 
 declare option xdmp:mapping "false";
 
-
+(: This should be replaced with fn:format-number :)
+declare function my:format-number($value, $picture as xs:string) as xs:string {
+	try {
+		format-number($value, $picture)
+	} catch($err) {
+		string($value)
+	}
+};
 
 declare function my:documents-url($coll-ids as xs:string*, $root-relative as xs:boolean) as xs:string {
     let $protocol := xdmp:get-request-protocol()
@@ -87,7 +96,6 @@ declare function my:render-xhtml($docs as node()*, $start as xs:integer, $end as
 	return
     (
     xdmp:add-response-header("Content-Type", "text/html;charset=utf-8"),
-    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
     <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
         	<meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
@@ -100,9 +108,10 @@ declare function my:render-xhtml($docs as node()*, $start as xs:integer, $end as
            
         </head>
         <body>
+        		<div class="database">Database <strong>{xdmp:database-name(xdmp:database())}</strong></div>
             <h1>{if(starts-with($r, "/documents")) then "Documents" else concat("Collection ", string-join($colls, ", "))}</h1>
             <div>
-	          	{(format-number($total, "#,###"), " documents ", if($q) then (" matching ", <strong>{$q}</strong>) else "")}
+	          	{(my:format-number($total, "#,###"), " documents ", if($q) then (" matching ", <strong>{$q}</strong>) else "")}
 	          </div>
             {$nav}
             <table>
@@ -122,14 +131,24 @@ declare function my:render-xhtml($docs as node()*, $start as xs:integer, $end as
 	                for $doc in $docs
 	                let $uri := xdmp:node-uri($doc)
 	                let $url := concat("/documents/", encode-for-uri($uri))
+                        let $root
+                          := if (count($doc/node()) > 1)
+                             then
+                               if ($doc/*)
+                               then
+                                 $doc/*
+                               else
+                                 $doc/node()[1]
+                             else
+                               $doc/node()
 	                return <tr>
-	                	<td class="action"><a href="{$url}#edit"><img src="/assets/pencil.png" alt="Edit"/></a></td>
+	                	<td class="action"><a href="{$url}"><img src="/assets/pencil.png" alt="Edit"/></a></td>
 	                	<td class="uri"><a href="{$url}">{$uri}</a></td>
 	                	<td>{my:node-stack($doc)}</td>
-	                	<td>{xdmp:node-kind($doc/node())}</td>
-	                	<td><span class="local-name">{local-name($doc/node())}</span> {{<span class="namespace">{namespace-uri($doc/node())}</span>}}</td>
+	                	<td>{xdmp:node-kind($root)}</td>
+	                	<td><span class="local-name">{local-name($root)}</span> {{<span class="namespace">{namespace-uri($root)}</span>}}</td>
 	                	{ (: This is probably prohibitively expensive for large documents :) }
-	                	<td class="numeric">{format-number(string-length(xdmp:quote($doc)), "###,###")}</td>
+	                	<td class="numeric">{if(xdmp:node-kind($root)="element") then my:format-number(string-length(xdmp:quote($doc)) div 1024, "###,### KB") else ""}</td>
 	                	<td class="action"><button class="delete-action" data-url="{$url}" data-uri="{$uri}" title="Remove {$uri}…"></button></td>
 	                </tr>
 	               else <tr><td colspan="6" class="message">I can’t find anything matching <strong>{$q}</strong></td></tr>
@@ -222,8 +241,26 @@ return
 		else
 			xdmp:set-response-code(406, "Not acceptable")
 	else if("POST" eq $method) then
+		if("application/atom+xml;type=entry" eq $content-type) then
+			let $uri as xs:string := xdmp:get-request-header("Slug") (: TODO Generalize this to support other schemes for mapping a slug to a URI :)
+			(: This requires that application/atom+xml is registered with MarkLogic as an XML MIME-type. :)
+			let $entry as element(atom:entry) := xdmp:get-request-body("xml")/node()
+			return
+      	(
+      		xdmp:document-insert(
+      			$uri, 
+      			$entry, 
+      			xdmp:document-get-permissions($uri), 
+      			xdmp:document-get-collections($uri), 
+      			xdmp:document-get-quality($uri)
+      		),
+      		xdmp:set-response-code(201, "Created"),
+      		xdmp:add-response-header("Location", util:document-url($uri)),
+      		xdmp:add-response-header("Content-Type", "application/atom+xml;type=entry"),
+      		$entry
+      	)
 		(: Evaluate a query. This is a sharp tool. Consider how one might disable this. Perhaps in the dispatcher. :)
-		if("application/xquery+xml" eq $content-type) then
+		else if("application/xquery+xml" eq $content-type) then
 			let $query as xs:string? := xdmp:get-request-body("text")
 			return (xdmp:add-response-header("Content-Type", $accept), 
 				try {
@@ -234,6 +271,6 @@ return
 				})
 		(: else if => should be allowed to add a document using a system-wide URI policy :)
 		else
-			xdmp:set-response-code(400, "No can do")	
+			xdmp:set-response-code(400, concat("No can do: ", $content-type))	
 	else 
 		xdmp:set-response-code(405, "Method not allowed")

@@ -1,4 +1,4 @@
-/* This is a fucking mess (but works) */                
+/* This is a mess (but works) */                
 YUI().use("node", "io", "dump", "anim", function(Y) {
 	var self = document.URL; // For some reason, Safari decodes document.location.href and others
 	var state = document.location.hash.slice(1);

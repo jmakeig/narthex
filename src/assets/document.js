@@ -1,4 +1,4 @@
-/* This is a fucking mess (but works) */                
+/* This is a mess (but works) */                
 YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 	var self = document.URL; // For some reason, Safari decodes document.location.href and others
 	var state = document.location.hash.slice(1) || "document";
@@ -16,6 +16,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 	});
 	
 	Y.on("domready", function(e) {
+		if(document.getElementById('DocumentXML')) {
 		editor = CodeMirror.fromTextArea('DocumentXML', {
 		    height: "100%",
 		    width: "100%",
@@ -28,6 +29,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 		    tabMode: "indent"
 		    //onChange: onChange
 		 });
+		}
 		//editor.grabKeys(function() { console.log("asdf");});
 		properties = CodeMirror.fromTextArea('PropertiesXML', {
 		    height: "100%",
@@ -105,6 +107,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 		var quality = form.one("input[name=quality]").get("value");
 		var forest = form.one("select[name=forest]").get("value");
 		
+		// There must be a better way to build this
 		var data = '<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ml="ml">'+
 	    	'<atom:id>asdf</atom:id>'+
 	    	'<atom:tite>title</atom:tite>'+
@@ -128,7 +131,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 		
 		var config = {
 			method: "PUT",
-			headers: { "Content-Type": "application/atom+xml;type=entry", "Accept": "application/atom+xml;type=entry" },
+			headers: { "Content-Type": "application/atom+xml;type=entry"},
 			data: data, 
 			on: {
 				start: function(id, o) {
@@ -138,20 +141,34 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 					.set("innerHTML", "Saving…");
 				},
 				success: function(id, o) {
-					//editor.setCode(o.responseText);
-					var xml = o.responseXML;
-					var entry = xml.getElementsByTagNameNS("http://www.w3.org/2005/Atom", "content")[0].firstChild;
-					var serializer = new XMLSerializer();
-					editor.setCode(serializer.serializeToString(entry));
-					Y.one("#Notification").setStyle("opacity","1").setStyle("background", "#0c6").setAttribute("title", o.status + " " + o.statusText).set("innerHTML", "Saved.");
-					var myAnim = new Y.Anim({
-                        node: '#Notification',
-                        to: {
-                            opacity: 0
-                        }
-                    });
-                    // Bind the function to this (Where's Prototype when I need it?)
-                    window.setTimeout(function() {(function() {myAnim.run()}).apply(this)}, 2500);
+					//console.log("Successfully PUT with status " + o.status);
+					// TODO: This nesting is awful. It also effectively swallows the GET failure
+					var g = {
+						method: "GET",
+						headers: { "Accept": "application/atom+xml;type=entry" },
+						on: {
+							success: function(id, o) {
+								//editor.setCode(o.responseText);
+								var xml = o.responseXML;
+								var entry = xml.getElementsByTagNameNS("http://www.w3.org/2005/Atom", "content")[0].firstElementChild;
+								var serializer = new XMLSerializer();
+								editor.setCode(serializer.serializeToString(entry));
+								Y.one("#Notification").setStyle("opacity","1").setStyle("background", "#0c6").setAttribute("title", o.status + " " + o.statusText).set("innerHTML", "Saved.");
+								var myAnim = new Y.Anim({
+			                        node: '#Notification',
+			                        to: {
+			                            opacity: 0
+			                        }
+			                    });
+			                    // Bind the function to this (Where's Prototype when I need it?)
+			                    window.setTimeout(function() {(function() {myAnim.run()}).apply(this)}, 2500);							
+							},
+							failure: function(e) {
+								console.dir(e);
+							}
+						}
+					}
+					Y.io(self, g);
 				},
 				failure: function(e) {
 					Y.one("#Notification").setStyle("opacity","1").setStyle("background", "red").set("innerHTML", "Oops!");
@@ -160,7 +177,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 				end: function(id) {}
 			}
 		}
-		console.log("PUT to " + self);
+		// console.log("PUT "+data+" to " + self);
 		var request = Y.io(self, config);
 	});
 	
@@ -169,7 +186,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 			method: "DELETE",
 			on: {
 				success: function(id, o) {
-					console.log(o.statusCode);
+					// console.log(o.statusCode);
 					Y.one("#Notification")
 						.setStyle("opacity","1")
 						.setStyle("background", "#333")
@@ -215,7 +232,7 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 					success: function(id, o) {
 						//Y.one("#DocumentXML").set("value", o.responseText);
 						editor.setCode(o.responseText);
-						console.log(editor.getCode())
+						// console.log(editor.getCode())
 						Y.one("#Notification").setStyle("opacity","1").setStyle("background", "#0c6").setAttribute("title", o.status + " " + o.statusText).set("innerHTML", "Saved.");
 						var myAnim = new Y.Anim({
 	                        node: '#Notification',
@@ -247,6 +264,23 @@ YUI().use("node", "io", "dump", "anim", "collection", function(Y) {
 			var target = evt.currentTarget;
 			target.ancestor("li").remove();
 		});
+	});
+	
+	Y.all(".add-permission-action").on("click", function(evt) {
+		console.log("add-permission-action");
+		/*
+		var collections = Y.one("#collections");
+		var name = Y.one(".add-collection-name").get("value");
+		var collection = Y.Node.create('<li class="collection new">'+name+'<input type="hidden" name="collections" value="'+name+'"/><button class="delete-action" title="Remove collection"></button></li>');
+		collections.append(collection);
+		Y.one(".add-collection-name").set("value", "").focus();
+		
+		// TODO: DRY in domready
+		collection.one(".delete-action").on("click", function(evt){
+			var target = evt.currentTarget;
+			target.ancestor("li").remove();
+		});
+		*/
 	});
 	
 });

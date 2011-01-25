@@ -100,7 +100,7 @@ class TestDocument < Test::Unit::TestCase
 		assert_equal "application/xml", response.headers[:content_type]
 	end
 	
-	def test_document_put_envelope
+	def _test_document_put_envelope
 		uri = "envelope.xml"
 		headers = {:content_type => 'application/vnd.marklogic.document-envelope'}
 		envelope = IO.read("test/envelope.xml")
@@ -153,7 +153,7 @@ class TestDocument < Test::Unit::TestCase
 		}
 	end
 	
-	def test_metadata_put
+	def _test_metadata_put
 		uri = "meta.xml"
 		@resource["/documents/" + uri].put('<stuff xmlns="stuff">' + uri + '</stuff>', {:content_type => 'application/xml'})
 		# print uri

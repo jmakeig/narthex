@@ -27,5 +27,5 @@ declare function atompub:render-entry($uri as xs:string) as element(atom:entry) 
 };
 
 declare function atompub:render-feed($uris as xs:string*) as element(atom:feed)? {
-
+	()
 };

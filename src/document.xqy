@@ -1,7 +1,8 @@
 xquery version "1.0-ml";
 import module namespace fx="http://www.functx.com" at "/MarkLogic/functx/functx-1.0-nodoc-2007-01.xqy";
-import module namespace http="http://marklogic.com/function/http" at "lib/http.xqy";
+import module namespace http="http://marklogic.com/util/http" at "lib/http.xqy";
 import module namespace atompub="http://www.marklogic.com/modules/atompub" at "lib/atompub.xqy";
+import module namespace util="http://marklogic.com/narthex/util" at "lib/util.xqy";
 declare namespace atom="http://www.w3.org/2005/Atom";
 declare namespace sec="http://marklogic.com/xdmp/security";
 declare namespace prop="http://marklogic.com/xdmp/property";
@@ -21,34 +22,6 @@ declare function my:role-names($role-ids as xs:unsignedLong*) as xs:string* {
 	    <database>{xdmp:security-database()}</database>
 	  </options>
 	)
-};
-
-(:
- : Centralized place to create URLs
- : 
- : @param $doc-uri The database URI of a document
- : @param root-relative Whether to start from the root of the server as opposed to an absolute URL begining with a http[s]
- : @return The server-specific URL 
- :)
-declare function my:document-url($doc-uri as xs:string, $root-relative as xs:boolean) as xs:string {
-	let $protocol := xdmp:get-request-protocol()
-	let $host := xdmp:get-request-header("Host")
-	let $root := if($root-relative) then "" else concat($protocol, "://", $host)
-	return concat($root, "/documents/", encode-for-uri($doc-uri))
-};
-declare function my:document-url($doc-uri as xs:string) as xs:string {
-	my:document-url($doc-uri, false())
-};
-
-declare function my:collection-url($coll-uri as xs:string+) as xs:string {
-	my:collection-url($coll-uri, false())
-};
-declare function my:collection-url($coll-uris as xs:string+, $root-relative as xs:boolean) as xs:string {
-	let $protocol := xdmp:get-request-protocol()
-	let $host := xdmp:get-request-header("Host")
-	let $root := if($root-relative) then "" else concat($protocol, "://", $host)
-	let $colls := for $c in $coll-uris return encode-for-uri($c)
-	return concat($root, "/collections/", string-join($colls, "+"))
 };
 
 
@@ -76,11 +49,14 @@ declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean, $varian
 	    <title>{$uri}</title>{
 	    for $v in $variants
 	       return 
-	           <link rel="self" href="{my:document-url($uri, false())}" type="{http:variant-to-string($v)}"/>
+	           <link rel="self" href="{util:document-url($uri, false())}" type="{http:variant-to-string($v)}"/>
 	    }
 	  </head>
 	  <body>
-			<h1>{if($is-new) then <span class="callout">New</span> else ()} <a href="/documents/{encode-for-uri($uri)}">{$uri}</a></h1>
+			<h1>{if($is-new) then <span class="callout">New</span> else ()}
+				{(: Issue 16: Need a smarter way to truncate URIs :)} 
+				<a href="/documents/{encode-for-uri($uri)}" title="{$uri}">{substring($uri, 1, 60)}{if(string-length($uri) gt 60) then "…" else ()}</a>
+			</h1>
 			<form id="Document">
       <div>
       	<ul id="document-actions" class="actions">
@@ -96,9 +72,13 @@ declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean, $varian
       		<li id="metadata-nav"><a href="#metadata">Metadata</a></li>
       	</ul>
       </div>
-			<div id="document">
-				<textarea id="DocumentXML">{if($doc) then fx:trim(xdmp:quote($doc)) else ""}</textarea>
-			</div>
+			<div id="document">{
+				(: This feels like a hack. Need better support for adding/editing/uploading text and binaries :)
+				if(xdmp:node-kind($doc/node()) = ("element", "text")) then
+					<textarea id="DocumentXML">{if($doc) then fx:trim(xdmp:quote($doc)) else ""}</textarea>
+				else
+					"I'm binary"
+			}</div>
 			<div id="properties">
 				<textarea id="PropertiesXML">{xdmp:document-properties($uri)}</textarea>
 			</div>
@@ -183,6 +163,7 @@ declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean, $varian
 					<li><button class="save-action">Save Metadata</button></li>
 				</ul>-->
 			</div>
+			</form>
 			<div id="Nav">{
 			let $q := xdmp:get-request-field("q")
 			return <form method="get" action="/documents">
@@ -197,7 +178,6 @@ declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean, $varian
 						</div>
 			</form>
 			}</div>
-			</form>
       <div id="Notification"></div>
 	  </body>
 	</html>
@@ -226,7 +206,7 @@ return
       			xdmp:document-get-quality($uri)
       		),
       		xdmp:set-response-code($code, ""),
-      		xdmp:add-response-header("Location", my:document-url($uri)),
+      		xdmp:add-response-header("Location", util:document-url($uri)),
       		xdmp:add-response-header("Content-Type", "application/xml"),
       		xdmp:get-request-body("xml")
       	)
@@ -235,7 +215,7 @@ return
     else if (contains($content-type, "application/atom+xml") and contains($content-type, "type=entry")) then
       let $envelope := xdmp:get-request-body("xml")/atom:entry
       let $body as element() := $envelope/atom:content/element()
-      let $permissions as element(sec:permission)* := $envelope/ml:metadata/sec:permission
+      let $permissions as element(sec:permission)* := $envelope/sec:permission
       let $collections as xs:string* := $envelope/ml:collection/text()
       let $forest-ids as xs:unsignedLong* := $envelope/ml:forest/text()
       let $quality as xs:int? := $envelope/ml:quality/text()
@@ -250,37 +230,8 @@ return
                     $forest-ids
          ),
          xdmp:document-set-properties($uri, $properties),
-         (: TODO: If it's new we should send a 201 :)
-         xdmp:set-response-code(200, "OK"),
-         xdmp:add-response-header(
-           "Content-Type",
-           "application/atom+xml;type=entry"),
-         atompub:render-entry($uri))
-    (: DEPRECATED :)
-    else if ("application/vnd.marklogic.document-envelope" eq $content-type) then
-      let $envelope := xdmp:get-request-body("xml")/ml:envelope
-      let $body as element() := $envelope/ml:document/element()
-      let $permissions as element(sec:permission)* := $envelope/ml:metadata/sec:permission
-      let $collections as xs:string* := $envelope/ml:metadata/ml:collection/text()
-      let $forest-ids as xs:unsignedLong* := $envelope/ml:metadata/ml:forest/text()
-      let $quality as xs:int? := $envelope/ml:metadata/ml:quality/text()
-      let $properties as element()* := $envelope/ml:metadata/prop:properties/element()
-      return
-        (xdmp:document-insert(
-					$uri, 
-					$body,
-					$permissions,
-					$collections,
-					$quality,
-					$forest-ids
-         ),
-         xdmp:document-set-properties($uri, $properties),
-         (: TODO: If it's new we should send a 201 :)
-         xdmp:set-response-code(200, "OK"),
-         xdmp:add-response-header(
-           "Content-Type",
-           "application/vnd.marklogic.document-envelope"),
-         $body)
+         xdmp:set-response-code(if(doc-available($uri)) then 200 else 201, "OK")
+         )
     else
       xdmp:set-response-code(400, concat("I don’t know what to do with ", $content-type))
   else if ("GET" eq $method) then

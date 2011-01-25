@@ -1,8 +1,8 @@
 xquery version "1.0-ml";
 
 (:import module namespace search="http://marklogic.com/appservices/search" at "/MarkLogic/appservices/search/search.xqy";:)
-import module "http://marklogic.com/function/http" at "lib/http.xqy";
-declare namespace http="http://marklogic.com/function/http";
+import module "http://marklogic.com/util/http" at "lib/http.xqy";
+declare namespace http="http://marklogic.com/util/http";
 declare namespace ml="ml";
 declare namespace my="local";
 declare namespace error="http://marklogic.com/xdmp/error";

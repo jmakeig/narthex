@@ -85,6 +85,12 @@ strong {
 ul#document-actions {
 	margin: 0;	
 }
+.database {
+	float: right;
+	margin: 0.5em;
+	margin-top: 1.5em;
+	text-align: right;
+}
 #Nav {
 	position: fixed;
 	box-sizing: border-box;
