@@ -7,6 +7,7 @@ Narthex provides three complementary interfaces for interacting with documents a
 *  “Plain-old-CRUD” for quickly adding, updating, and deleting XML, text, and binary documents over HTTP
 
 Features
+
 *  Browse all documents or by collection
 *  Full-text search over all documents or by collection
 *  Update document XML (syntax highlighting in the browser)
