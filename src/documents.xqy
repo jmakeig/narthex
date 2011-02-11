@@ -108,7 +108,16 @@ declare function my:render-xhtml($docs as node()*, $start as xs:integer, $end as
            
         </head>
         <body>
-        		<div class="database">Database <strong>{xdmp:database-name(xdmp:database())}</strong></div>
+        		<div class="database">
+        			<form action="?" method="get">
+								<select name="db">{
+										for $db in xdmp:databases()
+										order by xdmp:database-name($db) ascending
+										return <option value="{$db}">{if(xdmp:database() eq $db) then attribute selected {"selected"} else ()}{xdmp:database-name($db)}</option>
+									}</select>
+									<button>Select</button>
+							</form>
+        		</div>
             <h1>{if(starts-with($r, "/documents")) then "Documents" else concat("Collection ", string-join($colls, ", "))}</h1>
             <div>
 	          	{(my:format-number($total, "#,###"), " documents ", if($q) then (" matching ", <strong>{$q}</strong>) else "")}
