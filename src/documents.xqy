@@ -160,7 +160,7 @@ declare function my:render-xhtml($docs as node()*, $start as xs:integer, $end as
 	                	<td class="numeric">{if(xdmp:node-kind($root)="element") then my:format-number(string-length(xdmp:quote($doc)) div 1024, "###,### KB") else ""}</td>
 	                	<td class="action"><button class="delete-action" data-url="{$url}" data-uri="{$uri}" title="Remove {$uri}…"></button></td>
 	                </tr>
-	               else <tr><td colspan="6" class="message">I can’t find anything matching <strong>{$q}</strong></td></tr>
+	               else <tr><td colspan="7" class="message">I can’t find anything matching <strong>{$q}</strong></td></tr>
             }
             	</tbody>
             </table>
