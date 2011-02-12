@@ -176,7 +176,11 @@ declare function my:render-xhtml($docs as node()*, $start as xs:integer, $end as
 								<div>
 									<ul>
 										<li><a href="/documents">Documents</a></li>
-										<li><a href="/collections">Collections</a></li>
+										{try {
+											let $_ := cts:collections()
+											return <li><a href="/collections">Collections</a></li>
+											} catch($error) { (: Intentionally swallowed :) }
+										}
 									</ul>
 								</div>
 			      	</form>
