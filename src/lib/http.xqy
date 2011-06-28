@@ -52,7 +52,7 @@ declare function http-util:parse-request() as item()+ {
 declare function http-util:parse-accept-header($header as xs:string) as element(http:variants) {
 	<http:variants>{
 		for $t1 at $i in tokenize($header, '\s*,\s*')
-		return <http:variant order={$i}>{
+		return <http:variant order="{$i}">{
 			for $t2 at $j in tokenize($t1, '\s*;\s*')
 			return 
 				if($j eq 1) then
@@ -67,7 +67,7 @@ declare function http-util:parse-accept-header($header as xs:string) as element(
 					let $t3 := tokenize($t2, '\s*=\s*')
 					return
 						if($t3[1] eq 'q') then <http:quality>{functx:trim($t3[2])}</http:quality> 
-						else <http:param name={$t3[1]}>{functx:trim($t3[2])}</http:param>
+						else <http:param name="{$t3[1]}">{functx:trim($t3[2])}</http:param>
 		}</http:variant>
 	}</http:variants>
 };
