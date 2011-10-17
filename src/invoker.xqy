@@ -8,7 +8,7 @@ declare function local:get-cookie-value($name as xs:string) as xs:string* {
 	return if($k-vs[1] eq $name) then $k-vs[2] else ()
 };
 let $_ := xdmp:log(local:get-cookie-value("db"))
-let $db := xdmp:get-request-field("db", string(xdmp:database((local:get-cookie-value("db"), "Documents")[1])))
+let $db := xdmp:get-request-field("db", string(xdmp:database((local:get-cookie-value("db"), xdmp:database-name(xdmp:database()))[1])))
 return ( 
 	if(xdmp:get-request-field("db")) then xdmp:add-response-header("Set-Cookie", concat("db=", xdmp:database-name(xs:unsignedLong($db)), "; expires=Wednesday, 01-Aug-2040 08:00:00 GMT; path=/; domain=", xdmp:host-name(xdmp:host()))) else (),
 	xdmp:invoke(
