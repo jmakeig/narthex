@@ -1,4 +1,4 @@
-xquery version "1.0-ml";
+  xquery version "1.0-ml";
 import module namespace fx="http://www.functx.com" at "/MarkLogic/functx/functx-1.0-nodoc-2007-01.xqy";
 import module namespace http="http://marklogic.com/util/http" at "lib/http.xqy";
 import module namespace atompub="http://www.marklogic.com/modules/atompub" at "lib/atompub.xqy";
@@ -33,7 +33,7 @@ declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean) as item
 	my:render-xhtml($doc, $is-new, ())
 };
 
-declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean, $variants as element(http:variant)*) as item()+ {
+declare function my:render-xhtml($doc as node()?, $is-new as xs:boolean, $variants as node((:http:variant:))*) as item()+ {
   let $uri := if($doc) then xdmp:node-uri($doc) else xdmp:get-request-field("uri")
   return (
   	xdmp:add-response-header("Content-Type", "text/html;charset=utf-8"),
