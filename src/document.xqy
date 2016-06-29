@@ -11,17 +11,22 @@ declare namespace my="local";
 
 (: TODO: Probably some crazy security issues going on here. :)
 declare function my:role-names($role-ids as xs:unsignedLong*) as xs:string* {
-	xdmp:eval(
-		concat(
-			'import module namespace sec="http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";sec:get-role-names((', 
-			string-join(for $ri in $role-ids return xs:string($ri), ","), 
-			"))"
-		),
-	  (),
-	  <options xmlns="xdmp:eval">
-	    <database>{xdmp:security-database()}</database>
-	  </options>
-	)
+  try {
+    xdmp:eval(
+      concat(
+        'import module namespace sec="http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";sec:get-role-names((', 
+        string-join(for $ri in $role-ids return xs:string($ri), ","), 
+        "))"
+      ),
+      (),
+      <options xmlns="xdmp:eval">
+        <database>{xdmp:security-database()}</database>
+      </options>
+    )
+  } catch($err) {
+    for $r in $role-ids
+    return concat(string($r), ' (role not found)')
+  }
 };
 
 
