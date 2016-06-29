@@ -16,4 +16,4 @@ Features
 *  Remove documents
 *  Visualize document elements to spot patterns and anomalies
 
-![Narthex document browsing](http://makeig.com/marklogic/narthex-documents.png)
+![Narthex document browsing](https://cloud.githubusercontent.com/assets/176233/16468547/47726618-3e01-11e6-9526-ab63fa4bb2f1.png)
